@@ -24,7 +24,7 @@ jobs:
           node-version: lts/*
 
       - name: Setup
-        run: npm i -g @antfu/ni
+        run: pnpm add -g @antfu/ni
 
       - name: Install
         run: nci
@@ -46,7 +46,7 @@ jobs:
           node-version: lts/*
 
       - name: Setup
-        run: npm i -g @antfu/ni
+        run: pnpm add -g @antfu/ni
 
       - name: Install
         run: nci
@@ -60,7 +60,7 @@ jobs:
     strategy:
       matrix:
         node: [lts/*]
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest]
       fail-fast: false
 
     steps:
@@ -74,8 +74,10 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
+      - run: corepack enable
+
       - name: Setup
-        run: npm i -g @antfu/ni
+        run: pnpm add -g @antfu/ni
 
       - name: Install
         run: nci

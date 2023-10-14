@@ -1,0 +1,39 @@
+{
+  "name": "@luuc/tailwindcss",
+  "version": "0.0.0",
+  "description": "A Tailwind CSS plugin for UI library",
+  "author": "savoygu <1029559886@qq.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/savoygu/luuc#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/savoygu/luuc.git",
+    "directory": "packages/@luuc-tailwindcss"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": "https://github.com/savoygu/luuc/issues",
+  "keywords": ["tailwind"],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "README.md",
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "dev": "unbuild --stub"
+  },
+  "devDependencies": {
+  }
+}

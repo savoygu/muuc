@@ -14,7 +14,10 @@
     "access": "public"
   },
   "bugs": "https://github.com/savoygu/luuc/issues",
-  "keywords": ["tailwind"],
+  "keywords": [
+    "tailwind",
+    "tailwind-plugin"
+  ],
   "sideEffects": false,
   "exports": {
     ".": {
@@ -34,6 +37,16 @@
     "build": "unbuild",
     "dev": "unbuild --stub"
   },
+  "peerDependencies": {
+    "tailwindcss": "^3.0"
+  },
   "devDependencies": {
+    "@prettier/sync": "^0.3.0",
+    "element-plus": "^2.4.0",
+    "fast-glob": "^3.3.1",
+    "find-up": "^6.3.0",
+    "postcss": "^8.4.31",
+    "prettier": "^3.0.3",
+    "tailwindcss": "^3.3.3"
   }
 }

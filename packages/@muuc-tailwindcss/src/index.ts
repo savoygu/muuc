@@ -5,10 +5,28 @@ import postcss from 'postcss'
 import fg from 'fast-glob'
 
 interface Options {
+  /**
+   * Css file paths or glob patterns, will pass to fast-glob
+   */
   source: string | string[]
+  /**
+   * The fast-glob ignore patterns
+   * @default []
+   */
   ignore?: string[]
+  /**
+   * Prefix of the selector
+   * @default 'ui'
+   */
   prefix?: string
+  /**
+   * Namespace of the UI library
+   * @default ''
+   */
   namespace?: string
+  /**
+   * Selector processing function, use to replace the selector namespace
+   */
   processSelector?: (selector: string, namespace?: string) => string
 }
 

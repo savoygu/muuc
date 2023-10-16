@@ -1,4 +1,4 @@
-# luuc
+# muuc
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
@@ -6,7 +6,7 @@
 [![JSDocs][jsdocs-src]][jsdocs-href]
 [![License][license-src]][license-href]
 
-Let UI library styles under control in Tailwind CSS
+Make UI library styles under control in Tailwind CSS
 
 ## License
 
@@ -15,13 +15,13 @@ Let UI library styles under control in Tailwind CSS
 
 <!-- Badges -->
 
-[npm-version-src]: https://img.shields.io/npm/v/luuc?style=flat&colorA=080f12&colorB=1fa669
-[npm-version-href]: https://npmjs.com/package/luuc
-[npm-downloads-src]: https://img.shields.io/npm/dm/luuc?style=flat&colorA=080f12&colorB=1fa669
-[npm-downloads-href]: https://npmjs.com/package/luuc
-[bundle-src]: https://img.shields.io/bundlephobia/minzip/luuc?style=flat&colorA=080f12&colorB=1fa669&label=minzip
-[bundle-href]: https://bundlephobia.com/result?p=luuc
-[license-src]: https://img.shields.io/github/license/savoygu/luuc.svg?style=flat&colorA=080f12&colorB=1fa669
-[license-href]: https://github.com/savoygu/luuc/blob/main/LICENSE
+[npm-version-src]: https://img.shields.io/npm/v/muuc?style=flat&colorA=080f12&colorB=1fa669
+[npm-version-href]: https://npmjs.com/package/muuc
+[npm-downloads-src]: https://img.shields.io/npm/dm/muuc?style=flat&colorA=080f12&colorB=1fa669
+[npm-downloads-href]: https://npmjs.com/package/muuc
+[bundle-src]: https://img.shields.io/bundlephobia/minzip/muuc?style=flat&colorA=080f12&colorB=1fa669&label=minzip
+[bundle-href]: https://bundlephobia.com/result?p=muuc
+[license-src]: https://img.shields.io/github/license/savoygu/muuc.svg?style=flat&colorA=080f12&colorB=1fa669
+[license-href]: https://github.com/savoygu/muuc/blob/main/LICENSE
 [jsdocs-src]: https://img.shields.io/badge/jsdocs-reference-080f12?style=flat&colorA=080f12&colorB=1fa669
-[jsdocs-href]: https://www.jsdocs.io/package/luuc
+[jsdocs-href]: https://www.jsdocs.io/package/muuc

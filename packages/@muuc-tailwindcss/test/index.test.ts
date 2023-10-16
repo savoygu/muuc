@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest'
 import prettier from '@prettier/sync'
 import { findUpSync } from 'find-up'
 
-import luuc from '../src'
+import muuc from '../src'
 
 const html = String.raw
 const css = String.raw
@@ -65,11 +65,11 @@ function run(input: string, config: any, plugin = tailwindcss) {
   })
 }
 
-describe('luuc', () => {
+describe('muuc', () => {
   it('should generate css for source files classes', async () => {
     const config = {
       content: [{ raw: html`<Input class="el-input__wrapper:border"></Input>` }],
-      plugins: [luuc({
+      plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
         ignore: ['**/el-var.css'],
       })],
@@ -90,7 +90,7 @@ describe('luuc', () => {
   it('should generate css for pseudo element', async () => {
     const config = {
       content: [{ raw: html`<Input class="el-input__inner!placeholder:text-orange-500"></Input>` }],
-      plugins: [luuc({
+      plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
         ignore: ['**/el-var.css'],
       })],
@@ -113,7 +113,7 @@ describe('luuc', () => {
   it('should generate css for pseudo classes', async () => {
     const config = {
       content: [{ raw: html`<Input class="el-input__inner!focus:text-red-500"></Input>` }],
-      plugins: [luuc({
+      plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
         ignore: ['**/el-var.css'],
       })],
@@ -136,7 +136,7 @@ describe('luuc', () => {
   it('should generate css for class.class selector', async () => {
     const config = {
       content: [{ raw: html`<Input class="el-input__wrapper.is-focus:shadow"></Input>` }],
-      plugins: [luuc({
+      plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
         ignore: ['**/el-var.css'],
       })],
@@ -161,7 +161,7 @@ describe('luuc', () => {
   it('should generate css for element.class selector', async () => {
     const config = {
       content: [{ raw: html`<Input class="el-input-group__append|button.el-button:bg-red-500"></Input>` }],
-      plugins: [luuc({
+      plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
         ignore: ['**/el-var.css'],
       })],
@@ -184,7 +184,7 @@ describe('luuc', () => {
   it('should generate css for descendant selector', async () => {
     const config = {
       content: [{ raw: html`<Input class="el-input--large|el-input__inner:text-orange-500"></Input>` }], // change placeholder color to black
-      plugins: [luuc({
+      plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
         ignore: ['**/el-var.css'],
       })],
@@ -207,7 +207,7 @@ describe('luuc', () => {
   it('should generate css for child selector', async () => { // > arbitrary
     const config = {
       content: [{ raw: html`<Input class="el-input-group--prepend>el-input__wrapper:border-none"></Input>` }], // >
-      plugins: [luuc({
+      plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
         ignore: ['**/el-var.css'],
       })],
@@ -234,7 +234,7 @@ describe('luuc', () => {
   // it('should generate css for sibling selector', async () => { // ~
   //   const config = {
   //     content: [{ raw: html`<Input class="el-input--large|el-input__inner:text-orange-500"></Input>` }], // change placeholder color to black
-  //     plugins: [luuc({
+  //     plugins: [muuc({
   //       source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
   //       ignore: ['**/el-var.css'],
   //     })],
@@ -257,7 +257,7 @@ describe('luuc', () => {
   it('should generate css for next sibling selector', async () => { // +
     const config = {
       content: [{ raw: html`<Input class="el-button+el-button:text-orange-500"></Input>` }], // change placeholder color to black
-      plugins: [luuc({
+      plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-button.css')!,
         ignore: ['**/el-var.css'],
       })],
@@ -282,7 +282,7 @@ describe('custom namespace', () => {
   it('should generate css for source files', async () => {
     const config = {
       content: [{ raw: html`<div class="ui-input__wrapper:border"></div>` }],
-      plugins: [luuc({
+      plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
         ignore: ['**/el-var.css'],
         namespace: 'ep',
@@ -304,7 +304,7 @@ describe('custom namespace', () => {
   it('should generate css for pseudo classes', async () => {
     const config = {
       content: [{ raw: html`<Input class="ui-input__inner!focus:text-red-500"></Input>` }],
-      plugins: [luuc({
+      plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
         ignore: ['**/el-var.css'],
         namespace: 'ep',
@@ -328,7 +328,7 @@ describe('custom namespace', () => {
   it('should generate css for class.class selector', async () => {
     const config = {
       content: [{ raw: html`<Input class="ui-input__wrapper.is-focus:shadow"></Input>` }],
-      plugins: [luuc({
+      plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
         ignore: ['**/el-var.css'],
         namespace: 'ep',
@@ -356,7 +356,7 @@ describe('custom prefix', () => {
   it('should generate css for source files', async () => {
     const config = {
       content: [{ raw: html`<div class="lui-input__wrapper:border"></div>` }],
-      plugins: [luuc({
+      plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
         ignore: ['**/el-var.css'],
         namespace: 'ep',
@@ -379,7 +379,7 @@ describe('custom prefix', () => {
   it('should generate css for pseudo classes', async () => {
     const config = {
       content: [{ raw: html`<Input class="lui-input__inner!focus:text-red-500"></Input>` }],
-      plugins: [luuc({
+      plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
         ignore: ['**/el-var.css'],
         namespace: 'ep',
@@ -404,7 +404,7 @@ describe('custom prefix', () => {
   it('should generate css for class.class selector', async () => {
     const config = {
       content: [{ raw: html`<Input class="lui-input__wrapper.is-focus:shadow"></Input>` }],
-      plugins: [luuc({
+      plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
         ignore: ['**/el-var.css'],
         namespace: 'ep',
@@ -433,7 +433,7 @@ describe('custom processSelector', () => {
   it('should generate css for source files', async () => {
     const config = {
       content: [{ raw: html`<div class="ui-input__wrapper:border"></div>` }],
-      plugins: [luuc({
+      plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
         ignore: ['**/el-var.css'],
         namespace: 'ep',
@@ -458,7 +458,7 @@ describe('custom processSelector', () => {
   it('should generate css for pseudo classes', async () => {
     const config = {
       content: [{ raw: html`<Input class="ui-input__inner!focus:text-red-500"></Input>` }],
-      plugins: [luuc({
+      plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
         ignore: ['**/el-var.css'],
         namespace: 'ep',
@@ -485,7 +485,7 @@ describe('custom processSelector', () => {
   it('should generate css for class.class selector', async () => {
     const config = {
       content: [{ raw: html`<Input class="ui-input__wrapper.is-focus:shadow"></Input>` }],
-      plugins: [luuc({
+      plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
         ignore: ['**/el-var.css'],
         namespace: 'ep',

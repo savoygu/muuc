@@ -1,4 +1,4 @@
-import { Assertion, AsymmetricMatchersContaining } from 'vitest'
+import 'vitest'
 
 interface CustomMatchers<R = unknown> {
   toMatchFormattedCss(css: string): R

@@ -1,4 +1,4 @@
-# @luuc/tailwindcss
+# @muuc/tailwindcss
 
 A Tailwind CSS plugin for UI library
 

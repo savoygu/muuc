@@ -1,16 +1,16 @@
 {
-  "name": "luuc",
+  "name": "muuc",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@8.8.0",
-  "description": "Let UI library styles under control in Tailwind CSS",
+  "description": "Make UI library styles under control in Tailwind CSS",
   "author": "savoygu <1029559886@qq.com>",
   "license": "MIT",
-  "homepage": "https://github.com/savoygu/luuc#readme",
+  "homepage": "https://github.com/savoygu/muuc#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/savoygu/luuc.git"
+    "url": "git+https://github.com/savoygu/muuc.git"
   },
   "scripts": {
     "build": "rimraf packages/*/dist && pnpm -r --filter=./packages/* run build",
@@ -18,7 +18,7 @@
     "lint": "eslint .",
     "lint:fix": "nr lint --fix",
     "prepare": "simple-git-hooks",
-    "release": "bumpp -r",
+    "release": "bumpp -r --no-push",
     "stub": "pnpm -r --filter=./packages/* --parallel run stub",
     "test": "vitest",
     "typecheck": "tsc --noEmit"

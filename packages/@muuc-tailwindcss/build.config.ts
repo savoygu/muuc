@@ -7,12 +7,11 @@ export default defineBuildConfig({
   declaration: true,
   clean: true,
   externals: [
+    'scss',
     'tailwindcss',
-    'postcss',
-    'fast-glob',
   ],
   rollup: {
     emitCJS: true,
-    // inlineDependencies: true,
+    inlineDependencies: true,
   },
 })

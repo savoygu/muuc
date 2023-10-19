@@ -4,6 +4,7 @@ import postcss from 'postcss'
 import { describe, expect, it } from 'vitest'
 import prettier from '@prettier/sync'
 import { findUpSync } from 'find-up'
+import fg from 'fast-glob'
 
 import muuc from '../src'
 
@@ -71,7 +72,6 @@ describe('muuc', () => {
       content: [{ raw: html`<Input class="el-input__wrapper:border"></Input>` }],
       plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
-        ignore: ['**/el-var.css'],
       })],
     }
 
@@ -92,7 +92,6 @@ describe('muuc', () => {
       content: [{ raw: html`<Input class="el-input__inner!placeholder:text-orange-500"></Input>` }],
       plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
-        ignore: ['**/el-var.css'],
       })],
     }
 
@@ -115,7 +114,6 @@ describe('muuc', () => {
       content: [{ raw: html`<Input class="el-input__inner!focus:text-red-500"></Input>` }],
       plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
-        ignore: ['**/el-var.css'],
       })],
     }
 
@@ -138,7 +136,6 @@ describe('muuc', () => {
       content: [{ raw: html`<Input class="el-input__wrapper.is-focus:shadow"></Input>` }],
       plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
-        ignore: ['**/el-var.css'],
       })],
     }
 
@@ -163,7 +160,6 @@ describe('muuc', () => {
       content: [{ raw: html`<Input class="el-input-group__append|button.el-button:bg-red-500"></Input>` }],
       plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
-        ignore: ['**/el-var.css'],
       })],
     }
 
@@ -186,7 +182,6 @@ describe('muuc', () => {
       content: [{ raw: html`<Input class="el-input--large|el-input__inner:text-orange-500"></Input>` }], // change placeholder color to black
       plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
-        ignore: ['**/el-var.css'],
       })],
     }
 
@@ -209,7 +204,6 @@ describe('muuc', () => {
       content: [{ raw: html`<Input class="el-input-group--prepend>el-input__wrapper:border-none"></Input>` }], // >
       plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
-        ignore: ['**/el-var.css'],
       })],
     }
 
@@ -259,7 +253,6 @@ describe('muuc', () => {
       content: [{ raw: html`<Input class="el-button+el-button:text-orange-500"></Input>` }], // change placeholder color to black
       plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-button.css')!,
-        ignore: ['**/el-var.css'],
       })],
     }
 
@@ -278,13 +271,93 @@ describe('muuc', () => {
   })
 })
 
+describe('support glob path', () => {
+  const themeDir = findUpSync('node_modules/element-plus/theme-chalk', { type: 'directory' })!
+  const source = fg
+    .sync('*.css', { cwd: themeDir })
+    .filter(fileName => fileName.startsWith('el-'))
+    .map(fileName => path.join(themeDir, fileName))
+
+  it('should generate css for source files', async () => {
+    const config = {
+      content: [{ raw: html`<div class="lui-input__wrapper:border"></div>` }],
+      plugins: [muuc({
+        source,
+        ignore: ['**/el-var.css'],
+        namespace: 'ep',
+        prefix: 'lui',
+      })],
+    }
+
+    return run('@tailwind utilities', config).then((result) => {
+      expect(result.css).toMatchFormattedCss(css`
+        .lui-input__wrapper\:border.ep-input__wrapper {
+          border-width: 1px;
+        }
+        .lui-input__wrapper\:border .ep-input__wrapper {
+          border-width: 1px;
+        }
+      `)
+    })
+  })
+
+  it('should generate css for pseudo classes', async () => {
+    const config = {
+      content: [{ raw: html`<Input class="lui-input__inner!focus:text-red-500"></Input>` }],
+      plugins: [muuc({
+        source,
+        namespace: 'ep',
+        prefix: 'lui',
+      })],
+    }
+
+    return run('@tailwind utilities', config).then((result) => {
+      expect(result.css).toMatchFormattedCss(css`
+        .lui-input__inner\!focus\:text-red-500.ep-input__inner:focus {
+          --tw-text-opacity: 1;
+          color: rgb(239 68 68 / var(--tw-text-opacity));
+        }
+        .lui-input__inner\!focus\:text-red-500 .ep-input__inner:focus {
+          --tw-text-opacity: 1;
+          color: rgb(239 68 68 / var(--tw-text-opacity));
+        }
+      `)
+    })
+  })
+
+  it('should generate css for class.class selector', async () => {
+    const config = {
+      content: [{ raw: html`<Input class="lui-input__wrapper.is-focus:shadow"></Input>` }],
+      plugins: [muuc({
+        source,
+        namespace: 'ep',
+        prefix: 'lui',
+      })],
+    }
+
+    return run('@tailwind utilities', config).then((result) => {
+      expect(result.css).toMatchFormattedCss(css`
+        .lui-input__wrapper\.is-focus\:shadow.ep-input__wrapper.is-focus {
+          --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+          --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+          box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+        }
+        .lui-input__wrapper\.is-focus\:shadow .ep-input__wrapper.is-focus {
+          --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+          --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+          box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+        }
+      `)
+    })
+  })
+})
+
 describe('custom namespace', () => {
   it('should generate css for source files', async () => {
     const config = {
       content: [{ raw: html`<div class="ui-input__wrapper:border"></div>` }],
       plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
-        ignore: ['**/el-var.css'],
         namespace: 'ep',
       })],
     }
@@ -306,7 +379,6 @@ describe('custom namespace', () => {
       content: [{ raw: html`<Input class="ui-input__inner!focus:text-red-500"></Input>` }],
       plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
-        ignore: ['**/el-var.css'],
         namespace: 'ep',
       })],
     }
@@ -330,7 +402,6 @@ describe('custom namespace', () => {
       content: [{ raw: html`<Input class="ui-input__wrapper.is-focus:shadow"></Input>` }],
       plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
-        ignore: ['**/el-var.css'],
         namespace: 'ep',
       })],
     }
@@ -358,7 +429,6 @@ describe('custom prefix', () => {
       content: [{ raw: html`<div class="lui-input__wrapper:border"></div>` }],
       plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
-        ignore: ['**/el-var.css'],
         namespace: 'ep',
         prefix: 'lui',
       })],
@@ -381,7 +451,6 @@ describe('custom prefix', () => {
       content: [{ raw: html`<Input class="lui-input__inner!focus:text-red-500"></Input>` }],
       plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
-        ignore: ['**/el-var.css'],
         namespace: 'ep',
         prefix: 'lui',
       })],
@@ -406,7 +475,6 @@ describe('custom prefix', () => {
       content: [{ raw: html`<Input class="lui-input__wrapper.is-focus:shadow"></Input>` }],
       plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
-        ignore: ['**/el-var.css'],
         namespace: 'ep',
         prefix: 'lui',
       })],
@@ -435,7 +503,6 @@ describe('custom processSelector', () => {
       content: [{ raw: html`<div class="ui-input__wrapper:border"></div>` }],
       plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
-        ignore: ['**/el-var.css'],
         namespace: 'ep',
         processSelector(selector, namespace) {
           return selector.replace(/el-/g, `${namespace!}-`)
@@ -460,7 +527,6 @@ describe('custom processSelector', () => {
       content: [{ raw: html`<Input class="ui-input__inner!focus:text-red-500"></Input>` }],
       plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
-        ignore: ['**/el-var.css'],
         namespace: 'ep',
         processSelector(selector, namespace) {
           return selector.replace(/el-/g, `${namespace!}-`)
@@ -487,7 +553,6 @@ describe('custom processSelector', () => {
       content: [{ raw: html`<Input class="ui-input__wrapper.is-focus:shadow"></Input>` }],
       plugins: [muuc({
         source: findUpSync('node_modules/element-plus/theme-chalk/el-input.css')!,
-        ignore: ['**/el-var.css'],
         namespace: 'ep',
         processSelector(selector, namespace) {
           return selector.replace(/el-/g, `${namespace!}-`)
@@ -503,6 +568,80 @@ describe('custom processSelector', () => {
           box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
         }
         .ui-input__wrapper\.is-focus\:shadow .ep-input__wrapper.is-focus {
+          --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+          --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+          box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+        }
+      `)
+    })
+  })
+})
+
+describe('support scss/sass files', () => {
+  it('should generate css for source files', async () => {
+    const config = {
+      content: [{ raw: html`<div class="lui-input__wrapper:border"></div>` }],
+      plugins: [muuc({
+        source: findUpSync('node_modules/element-plus/theme-chalk/src/input.scss')!,
+        namespace: 'ep',
+        prefix: 'lui',
+      })],
+    }
+
+    return run('@tailwind utilities', config).then((result) => {
+      expect(result.css).toMatchFormattedCss(css`
+        .lui-input__wrapper\:border.ep-input__wrapper {
+          border-width: 1px;
+        }
+        .lui-input__wrapper\:border .ep-input__wrapper {
+          border-width: 1px;
+        }
+      `)
+    })
+  })
+
+  it('should generate css for pseudo classes', async () => {
+    const config = {
+      content: [{ raw: html`<Input class="lui-input__inner!focus:text-red-500"></Input>` }],
+      plugins: [muuc({
+        source: findUpSync('node_modules/element-plus/theme-chalk/src/input.scss')!,
+        namespace: 'ep',
+        prefix: 'lui',
+      })],
+    }
+
+    return run('@tailwind utilities', config).then((result) => {
+      expect(result.css).toMatchFormattedCss(css`
+        .lui-input__inner\!focus\:text-red-500.ep-input__inner:focus {
+          --tw-text-opacity: 1;
+          color: rgb(239 68 68 / var(--tw-text-opacity));
+        }
+        .lui-input__inner\!focus\:text-red-500 .ep-input__inner:focus {
+          --tw-text-opacity: 1;
+          color: rgb(239 68 68 / var(--tw-text-opacity));
+        }
+      `)
+    })
+  })
+
+  it('should generate css for class.class selector', async () => {
+    const config = {
+      content: [{ raw: html`<Input class="lui-input__wrapper.is-focus:shadow"></Input>` }],
+      plugins: [muuc({
+        source: findUpSync('node_modules/element-plus/theme-chalk/src/input.scss')!,
+        namespace: 'ep',
+        prefix: 'lui',
+      })],
+    }
+
+    return run('@tailwind utilities', config).then((result) => {
+      expect(result.css).toMatchFormattedCss(css`
+        .lui-input__wrapper\.is-focus\:shadow.ep-input__wrapper.is-focus {
+          --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+          --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+          box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+        }
+        .lui-input__wrapper\.is-focus\:shadow .ep-input__wrapper.is-focus {
           --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
           --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
           box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);

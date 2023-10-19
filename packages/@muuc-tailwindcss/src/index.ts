@@ -3,6 +3,7 @@ import path from 'node:path'
 import plugin from 'tailwindcss/plugin'
 import postcss from 'postcss'
 import fg from 'fast-glob'
+import * as sass from 'sass'
 
 interface Options {
   /**
@@ -37,7 +38,15 @@ export default plugin.withOptions<Options>((options) => {
     .sync(source, { ignore })
     .reduce(
       (selectorMap, filePath) => {
-        const fileContent = fs.readFileSync(filePath, 'utf-8')
+        let fileContent
+        if (filePath.endsWith('.scss') || filePath.endsWith('.sass')) {
+          const result = sass.compile(filePath)
+          fileContent = result.css
+        }
+        else {
+          fileContent = fs.readFileSync(filePath, 'utf-8')
+        }
+
         const { name: fileName } = path.parse(filePath)
         const root = postcss.parse(fileContent)
         const selectors: string[] = []

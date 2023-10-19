@@ -1,6 +1,6 @@
 {
   "name": "@muuc/tailwindcss",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A Tailwind CSS plugin for UI library",
   "author": "savoygu <1029559886@qq.com>",
   "license": "MIT",
